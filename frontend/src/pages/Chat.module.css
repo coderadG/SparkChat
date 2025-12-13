@@ -1,5 +1,3 @@
-/* src/pages/Chat.module.css */
-
 .container {
   display: flex;
   flex-direction: column;
@@ -37,7 +35,7 @@
   padding: 1rem;
   margin-bottom: 1rem;
   background-color: var(--chatbox-bg);
-  color: var(--message-text-color); /* 👈 Ensure text color applies */
+  color: var(--message-text-color);
 }
 
 .message {
@@ -46,9 +44,26 @@
   padding: 8px 12px;
   background-color: var(--message-bg);
   border-radius: 8px;
-  color: var(--message-text-color); /* 👈 FIX: text now visible in both themes */
+  color: var(--message-text-color);
   max-width: 75%;
 }
+
+/* ✅ New Styles for Sent & Received Messages */
+.sent {
+  background-color: var(--sent-msg-bg, #dcf8c6); /* Uses theme variable */
+  text-align: right;
+  margin-left: auto;
+  color: var(--message-text-color); /* Dynamic text color */
+}
+
+.received {
+  background-color: var(--received-msg-bg, #e5e5e5); /* Uses theme variable */
+  text-align: left;
+  margin-right: auto;
+  color: var(--message-text-color); /* Dynamic text color */
+  border: 1px solid var(--border-color);
+}
+
 
 .form {
   display: flex;

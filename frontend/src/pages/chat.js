@@ -8,6 +8,7 @@ import { ref, push, onValue, update } from 'firebase/database';
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputMsg, setInputMsg] = useState('');
+  const [isOnline, setIsOnline] = useState(false); // ✅ Track recipient online status
   const { user } = useAuth();
   const { userId: recipientId } = useParams();
   const location = useLocation();
@@ -16,7 +17,7 @@ const Chat = () => {
   const currentUserId = user?.uid;
   const currentUserName = user?.username || "You";
 
-  // ✅ Send message (no change in this part)
+  // ✅ Send message
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!inputMsg.trim()) return;
@@ -68,13 +69,23 @@ const Chat = () => {
             new Date(`${a[1].date} ${a[1].time}`) -
             new Date(`${b[1].date} ${b[1].time}`)
           )
-          .map(([id, msg]) => msg); // ✅ Only keep message object
+          .map(([id, msg]) => msg);
         setMessages(myMessages);
       } else {
         setMessages([]);
       }
     });
   };
+
+  // ✅ Listen for recipient online status
+  useEffect(() => {
+    if (recipientId) {
+      const recipientRef = ref(database, `ChatUsers/${recipientId}/status`);
+      onValue(recipientRef, (snapshot) => {
+        setIsOnline(snapshot.val() === "online");
+      });
+    }
+  }, [recipientId]);
 
   // ✅ Run listener whenever partner changes
   useEffect(() => {
@@ -86,11 +97,21 @@ const Chat = () => {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h2 className={styles.title}>Chat with {recipientName}</h2>
+        <h2 className={styles.title}>
+          Chat with {recipientName}{" "}
+          <span className={isOnline ? styles.online : styles.offline}>
+            ● {isOnline ? "Online" : "Offline"}
+          </span>
+        </h2>
 
         <div className={styles.chatBox}>
           {messages.map((msg, index) => (
-            <div key={index} className={styles.message}>
+            <div
+              key={index}
+              className={`${styles.message} ${
+                msg.sender === currentUserId ? styles.sent : styles.received
+              }`}
+            >
               {msg.message}
             </div>
           ))}
@@ -114,6 +135,7 @@ const Chat = () => {
 };
 
 export default Chat;
+
 
 
 
