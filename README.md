@@ -1,6 +1,7 @@
 # CSoT-Full-Stack-
 
 **SparkChat** , a full-stack chat application built with **JavaScript** (78.2%), **CSS** (18%), and **HTML** (3.8%).
+🌐 **Live Demo:** https://spark-chat-gamma.vercel.app  
 
 ## Overview
 
